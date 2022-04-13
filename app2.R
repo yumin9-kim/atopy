@@ -1,7 +1,7 @@
 options(shiny.sanitize.errors = F)
 source("global2.R")
 library(shinycustomloader);library(survival);library(MatchIt);library(survey);library(ggplot2)
-library(shinymanager);library(jskm);library(DT);library(jsmodule);library(forestplot);library(tsibble)
+library(shinymanager);library(jskm);library(DT);library(jsmodule);library(forestplot);library(tsibble);library(prophet)
 nfactor.limit <- 21
 
 #setwd("/home/js/ShinyApps/Sev-cardio/MS-registry/Tx_of_moderately_severeMS")
