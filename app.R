@@ -184,7 +184,9 @@ server <- function(input, output, session) {
         fit[, 2][[1]][[1]]$data$sum_score
       }) %>% Reduce(c, .)))
       
-      table <- datatable(res.ARIMA[, -c(1, 2)], rownames=F, extensions = "Buttons", caption = "Individual data",
+      RMSE <- res.ARIMA %>% summarize(rmse = mean((.fitted-sum_score)^2, na.rm=T)) %>% round(., 3)
+      
+      table <- datatable(res.ARIMA[, -c(1, 2)], rownames=F, extensions = "Buttons", caption = paste0("RMSE = ", RMSE),
                          options = c(jstable::opt.data(input$ID_pred),
                                      
                                      list(scrollX = TRUE)
