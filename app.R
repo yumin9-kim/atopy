@@ -184,7 +184,7 @@ server <- function(input, output, session) {
         fit[, 2][[1]][[1]]$data$sum_score
       }) %>% Reduce(c, .)))
       
-      RMSE <- res.ARIMA %>% summarize(rmse = mean((.fitted-sum_score)^2, na.rm=T)) %>% round(., 3)
+      RMSE <- res.ARIMA %>% dplyr::summarize(rmse = mean((.fitted-sum_score)^2, na.rm=T)) %>% round(., 3)
       
       table <- datatable(res.ARIMA[, -c(1, 2)], rownames=F, extensions = "Buttons", caption = paste0("RMSE = ", RMSE),
                          options = c(jstable::opt.data(input$ID_pred),
@@ -200,7 +200,7 @@ server <- function(input, output, session) {
         merge(data.table(dplyr::filter(tibble(zz), ID == input$ID_pred))[, .(date)], by = "date", all.y = T) %>% .[order(date)] %>% 
         as_tsibble() %>% fill_gaps() %>% as.data.table()
       
-      RMSE <- tab.prophet %>% summarize(rmse = mean((predict-sum_score)^2, na.rm=T)) %>% round(., 3)
+      RMSE <- tab.prophet %>% dplyr::summarize(rmse = mean((predict-sum_score)^2, na.rm=T)) %>% round(., 3)
       
       table <- datatable(tab.prophet, rownames=F, extensions = "Buttons", caption = paste0("RMSE = ", RMSE$rmse),
                          options = c(jstable::opt.data(input$ID_pred),
