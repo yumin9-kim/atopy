@@ -196,11 +196,13 @@ server <- function(input, output, session) {
     else if (input$Method_pred == "Prophet"){
       mod <- obj.ind()
       pred <- predict(mod)
-      tab <- data.table(dplyr::bind_cols(date = ymd(pred$ds), predict = pred$yhat, sum_score = mod$history$sum_score))
-      tab.prophet <- tab %>% merge(data.table(dplyr::filter(tibble(zz), ID == input$ID_pred))[, .(date)], by = "date", all.y = T) %>% .[order(date)] %>% 
+      tab.prophet <- data.table(dplyr::bind_cols(date = ymd(pred$ds), predict = pred$yhat, sum_score = mod$history$sum_score)) %>%
+        merge(data.table(dplyr::filter(tibble(zz), ID == input$ID_pred))[, .(date)], by = "date", all.y = T) %>% .[order(date)] %>% 
         as_tsibble() %>% fill_gaps() %>% as.data.table()
-      RMSE <- tab %>% summarize(rmse = mean((predict-sum_score)^2)) %>% round(., 3)
-      table <- datatable(tab.prophet, rownames=F, extensions = "Buttons", caption = paste0("RMSE = ", RMSE),
+      
+      RMSE <- tab.prophet %>% summarize(rmse = mean((predict-sum_score)^2, na.rm=T)) %>% round(., 3)
+      
+      table <- datatable(tab.prophet, rownames=F, extensions = "Buttons", caption = paste0("RMSE = ", RMSE$rmse),
                          options = c(jstable::opt.data(input$ID_pred),
                                      
                                      list(scrollX = TRUE)
